@@ -8,7 +8,7 @@ data class Pago(
     val descripcion: String,
     val monto: Double,
     val tipoPago: Int,
-    val clienteId : Long,
+    val participanteId : Long,
     @PrimaryKey(autoGenerate = true)
-    val Id: Int? = null
+    val pagoId: Int? = null
 )

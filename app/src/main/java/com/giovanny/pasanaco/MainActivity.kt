@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,10 +22,12 @@ import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -103,19 +106,23 @@ class MainActivity : ComponentActivity() {
                             TopAppBar(
                                 navigationIcon = {
                                     if (!appBarState.isTabItem)
-                                        Icon(
-                                            modifier = Modifier
-                                                .size(28.dp)
-                                                .padding(end = 5.dp)
-                                                .clickable {
-                                                    navController.popBackStack()
-                                                },
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Back"
-                                        )
+                                        IconButton(onClick = {
+                                            navController.popBackStack()
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                                contentDescription = "Back"
+                                            )
+                                        }
+
                                 },
                                 title = {
-                                    Text(text = appBarState.title)
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(text = appBarState.title)
+                                    }
                                 })
                         },
                         floatingActionButton = {
@@ -207,6 +214,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Screen.NuevoPago.route) {
                                 NewPagoScreen(
+                                    navController = navController,
                                     onComposing = {
                                         appBarState = it
                                     },

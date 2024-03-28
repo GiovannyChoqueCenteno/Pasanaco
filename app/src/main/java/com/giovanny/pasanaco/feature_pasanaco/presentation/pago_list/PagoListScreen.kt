@@ -42,48 +42,31 @@ fun PagoListScreen(
     viewModel: PagoListViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-//    DisposableEffect(lifecycleOwner) {
-//        val lifecycle = lifecycleOwner.lifecycle
-//        val observer = LifecycleEventObserver { _, event ->
-//            if (event == Lifecycle.Event.ON_START) {
-//                onComposing(
-//                    AppBarState(
-//                        title = "Pagos",
-//                        floattingActionButton = {
-//                            FloatingActionButton(
-//                                modifier = Modifier.clip(CircleShape),
-//                                onClick = {
-//                                    navController.navigate(Screen.NuevoPago.route)
-//                                }) {
-//                                Icon(imageVector = Icons.Default.AddCircle, contentDescription = "")
-//                            }
-//                        },
-//                        isTabItem = true
-//                    )
-//                )
-//            }
-//        }
-//        lifecycle.addObserver(observer)
-//        onDispose {
-//            lifecycle.removeObserver(observer)
-//        }
-//    }
-    LaunchedEffect(key1 = true) {
-        onComposing(
-            AppBarState(
-                title = "Pagos",
-                floattingActionButton = {
-                    FloatingActionButton(
-                        modifier = Modifier.clip(CircleShape),
-                        onClick = {
-                            navController.navigate(Screen.NuevoPago.route)
-                        }) {
-                        Icon(imageVector = Icons.Default.AddCircle, contentDescription = "")
-                    }
-                },
-                isTabItem = true
-            )
-        )
+    DisposableEffect(lifecycleOwner) {
+        val lifecycle = lifecycleOwner.lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                onComposing(
+                    AppBarState(
+                        title = "Pagos",
+                        floattingActionButton = {
+                            FloatingActionButton(
+                                modifier = Modifier.clip(CircleShape),
+                                onClick = {
+                                    navController.navigate(Screen.NuevoPago.route)
+                                }) {
+                                Icon(imageVector = Icons.Default.AddCircle, contentDescription = "")
+                            }
+                        },
+                        isTabItem = true
+                    )
+                )
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()

@@ -2,7 +2,7 @@ package com.giovanny.pasanaco.feature_pasanaco.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.PagoUseCases
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.PagoUseCases
 import com.giovanny.pasanaco.feature_pasanaco.presentation.pago_list.PagoListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

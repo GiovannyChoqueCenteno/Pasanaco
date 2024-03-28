@@ -11,4 +11,8 @@ class PagoRepositoryImpl(
     override fun getPagos(): Flow<List<Pago>> {
         return dao.getPagos()
     }
+
+    override suspend fun addPago(pago: Pago) {
+        dao.addPago(pago)
+    }
 }

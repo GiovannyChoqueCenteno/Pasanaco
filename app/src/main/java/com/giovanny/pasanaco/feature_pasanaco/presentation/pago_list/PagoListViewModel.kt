@@ -1,12 +1,8 @@
 package com.giovanny.pasanaco.feature_pasanaco.presentation.pago_list
 
-import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.PagoUseCases
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.PagoUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

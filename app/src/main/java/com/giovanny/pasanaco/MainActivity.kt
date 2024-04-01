@@ -32,6 +32,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -66,6 +68,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PasanacoTheme {
                 val navController = rememberNavController()
+                val snackbarHostState = remember { SnackbarHostState() }
                 var appBarState by remember {
                     mutableStateOf(
                         AppBarState(
@@ -102,6 +105,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
+                        snackbarHost = { SnackbarHost(snackbarHostState) },
                         topBar = {
                             TopAppBar(
                                 navigationIcon = {
@@ -218,6 +222,7 @@ class MainActivity : ComponentActivity() {
                                     onComposing = {
                                         appBarState = it
                                     },
+                                    snackbarHostState  = snackbarHostState,
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(

@@ -1,7 +1,9 @@
 package com.giovanny.pasanaco.feature_pasanaco.presentation.pago_list
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -74,10 +76,15 @@ fun PagoListScreen(
         modifier = modifier
     ) {
         LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(state.pagoList) { pago ->
                 Card {
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(10.dp)
+                    ) {
                         Text(text = "Luis Perez")
                         Text(text = "Descripcion")
                         Text(text = "123.2 Bs.")

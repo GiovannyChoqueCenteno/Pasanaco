@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun NewPagoScreen(
     navController: NavController,
     onComposing: (AppBarState) -> Unit,
+    snackbarHostState : SnackbarHostState,
     viewModel: NewPagoViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -65,7 +66,7 @@ fun NewPagoScreen(
             lifecycle.removeObserver(observer)
         }
     }
-    val snackbarHostState = remember { SnackbarHostState() }
+
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->

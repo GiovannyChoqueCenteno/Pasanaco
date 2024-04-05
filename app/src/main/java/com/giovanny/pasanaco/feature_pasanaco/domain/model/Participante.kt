@@ -7,20 +7,26 @@ import androidx.room.PrimaryKey
 @Entity
 data class Participante(
     @PrimaryKey(autoGenerate = true)
-    val partipanteId: Long?,
+    val participanteId: Long? = null,
     val participanteDes: String,
     val estado: Boolean,
+    val monto: Double,
     @Ignore
     val selected: Boolean
 ) {
     constructor(
-        partipanteId: Long,
+        participanteId: Long,
         participanteDes: String,
+        monto: Double,
         estado: Boolean,
     ) : this(
-        partipanteId,
+        participanteId,
         participanteDes,
-        estado, false
+        estado,
+        monto,
+        false
     )
 
 }
+
+class InvalidParticipanteException(message: String) : Exception(message)

@@ -4,5 +4,7 @@ import com.giovanny.pasanaco.feature_pasanaco.domain.model.Participante
 
 data class ParticipanteListState(
     val isLoading: Boolean = false,
-    val participanteList: List<Participante>
+    val participanteList: List<Participante> = emptyList(),
+    val showDialog: Boolean = false,
+    val textDialog: String = ""
 )

@@ -3,29 +3,20 @@ package com.giovanny.pasanaco
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +28,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,17 +36,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.giovanny.pasanaco.core.AppBarState
-import com.giovanny.pasanaco.core.currentRouteAsState
 import com.giovanny.pasanaco.feature_pasanaco.presentation.home.HomeScreen
 import com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago.NewPagoScreen
+import com.giovanny.pasanaco.feature_pasanaco.presentation.new_participante.NewParticipanteScreen
 import com.giovanny.pasanaco.feature_pasanaco.presentation.options.OptionScreen
 import com.giovanny.pasanaco.feature_pasanaco.presentation.pago_list.PagoListScreen
+import com.giovanny.pasanaco.feature_pasanaco.presentation.pagos_participante.PagosParticipanteScreen
+import com.giovanny.pasanaco.feature_pasanaco.presentation.participante_list.ParticipanteListScreen
 import com.giovanny.pasanaco.ui.theme.PasanacoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -88,7 +79,7 @@ class MainActivity : ComponentActivity() {
                         title = "Pagos",
                         selectedIcon = Icons.Filled.CreditCard,
                         unselectedIcon = Icons.Outlined.CreditCard,
-                        screen = Screen.Pagos
+                        screen = Screen.PagoNavigation
                     ),
                     BottomNavigationItem(
                         title = "Opciones",
@@ -107,7 +98,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                         topBar = {
-                            TopAppBar(
+                            CenterAlignedTopAppBar(
                                 navigationIcon = {
                                     if (!appBarState.isTabItem)
                                         IconButton(onClick = {
@@ -121,34 +112,12 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 title = {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(text = appBarState.title)
-                                    }
+
+                                    Text(text = appBarState.title)
                                 })
                         },
                         floatingActionButton = {
                             appBarState.floattingActionButton?.invoke()
-//                            Box() {
-//                                if (currentRoute == null || bottomNavRoutes.contains(currentRoute)) {
-//                                    FloatingActionButton(
-//                                        shape = CircleShape,
-//                                        modifier = Modifier
-//                                            .align(Alignment.Center)
-//                                            .size(60.dp)
-//                                            .offset(y = 50.dp),
-//                                        onClick = {
-//                                            navController.navigate(Screen.NuevoPago.route)
-//                                        }) {
-//                                        Icon(
-//                                            imageVector = Icons.Default.Add,
-//                                            contentDescription = ""
-//                                        )
-//                                    }
-//                                }
-//                            }
                         },
                         bottomBar = {
                             if (appBarState.isTabItem) {
@@ -193,43 +162,92 @@ class MainActivity : ComponentActivity() {
                                         )
                                 )
                             }
-                            composable(Screen.Pagos.route) {
-                                PagoListScreen(
-                                    onComposing = {
-                                        appBarState = it
-                                    }, navController = navController,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(
-                                            bottom = padding.calculateBottomPadding(),
-                                            top = padding.calculateTopPadding()
+                            navigation(
+                                startDestination = Screen.Pagos.route,
+                                route = Screen.PagoNavigation.route
+                            ) {
+                                composable(Screen.Pagos.route) {
+                                    PagoListScreen(
+                                        onComposing = {
+                                            appBarState = it
+                                        }, navController = navController,
+                                        snackbarHostState = snackbarHostState,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(
+                                                bottom = padding.calculateBottomPadding(),
+                                                top = padding.calculateTopPadding()
+                                            )
+                                    )
+                                }
+                                composable(Screen.NuevoPago.route) {
+                                    NewPagoScreen(
+                                        navController = navController,
+                                        onComposing = {
+                                            appBarState = it
+                                        },
+                                        snackbarHostState = snackbarHostState,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(
+                                                bottom = padding.calculateBottomPadding(),
+                                                top = padding.calculateTopPadding()
+                                            )
+                                    )
+                                }
+                                navigation(
+                                    startDestination = Screen.Opciones.route,
+                                    route = Screen.OpcionesNavigation.route
+                                ) {
+                                    composable(Screen.Opciones.route) {
+                                        OptionScreen(
+                                            onComposing = {
+                                                appBarState = it
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(
+                                                    bottom = padding.calculateBottomPadding(),
+                                                    top = padding.calculateTopPadding()
+                                                ),
+                                            navController = navController
                                         )
-                                )
-                            }
-                            composable(Screen.Opciones.route) {
-                                OptionScreen(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(
-                                            bottom = padding.calculateBottomPadding(),
-                                            top = padding.calculateTopPadding()
+                                    }
+                                    composable(Screen.Participantes.route) {
+                                        ParticipanteListScreen(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(top = padding.calculateTopPadding()),
+                                            onComposing = {
+                                                appBarState = it
+                                            },
+                                            navController = navController
                                         )
-                                )
-                            }
-                            composable(Screen.NuevoPago.route) {
-                                NewPagoScreen(
-                                    navController = navController,
-                                    onComposing = {
-                                        appBarState = it
-                                    },
-                                    snackbarHostState  = snackbarHostState,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(
-                                            bottom = padding.calculateBottomPadding(),
-                                            top = padding.calculateTopPadding()
+                                    }
+                                    composable(Screen.NuevoParticipante.route) {
+                                        NewParticipanteScreen(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(top = padding.calculateTopPadding()),
+                                            onComposing = {
+                                                appBarState = it
+                                            },
+                                            navController = navController,
+                                            snackbarHostState = snackbarHostState
                                         )
-                                )
+
+                                    }
+                                    composable(Screen.PagoParticipante.route) {
+                                        PagosParticipanteScreen(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(top = padding.calculateTopPadding()),
+                                            onComposing = {
+                                                appBarState = it
+                                            },
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -247,8 +265,16 @@ data class BottomNavigationItem(
 )
 
 sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Pagos : Screen("pagos")
-    object NuevoPago : Screen("nuevopago")
-    object Opciones : Screen("opciones")
+    data object Home : Screen("home")
+    data object Pagos : Screen("pagos")
+    data object NuevoPago : Screen("nuevopago")
+    data object Opciones : Screen("opciones")
+    data object Participantes : Screen("participantes")
+    data object NuevoParticipante : Screen("nuevoparticipante")
+    data object PagoParticipante : Screen("pagoParticipante")
+
+    data object PagoNavigation : Screen("pagonavigation")
+    data object OpcionesNavigation : Screen("opcionesnavigation")
+
 }
+

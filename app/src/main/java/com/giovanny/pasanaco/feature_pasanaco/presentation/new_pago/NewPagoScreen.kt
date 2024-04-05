@@ -4,18 +4,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -27,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,16 +46,14 @@ import com.giovanny.pasanaco.core.AppBarState
 import com.giovanny.pasanaco.feature_pasanaco.presentation.participantes_dialog.ParticipantesDialog
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPagoScreen(
+    modifier: Modifier = Modifier,
     navController: NavController,
     onComposing: (AppBarState) -> Unit,
-    snackbarHostState : SnackbarHostState,
+    snackbarHostState: SnackbarHostState,
     viewModel: NewPagoViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val lifecycle = lifecycleOwner.lifecycle
@@ -66,8 +72,6 @@ fun NewPagoScreen(
             lifecycle.removeObserver(observer)
         }
     }
-
-
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -84,6 +88,23 @@ fun NewPagoScreen(
         }
     }
 
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    NewPagoContent(
+        modifier = modifier,
+        state = state,
+        onEvent = {
+            viewModel.onEvent(it)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewPagoContent(
+    modifier: Modifier,
+    state: NewPagoState,
+    onEvent: (NewPagoEvent) -> Unit
+) {
 
     Box(modifier = modifier.padding(horizontal = 20.dp)) {
         Column(
@@ -95,17 +116,17 @@ fun NewPagoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        viewModel.onEvent(NewPagoEvent.ToggleShowDialogCliente())
+                        onEvent(NewPagoEvent.ToggleShowDialogCliente())
                     },
                 enabled = false,
                 trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.ArrowDropDown,
-                        contentDescription = "Seleccionar"
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = state.showClienteDialog
                     )
                 },
-                value = state.participanteDes, onValueChange = {
-                    viewModel.onEvent(NewPagoEvent.EnterDescripcion(it))
+                value = state.participanteDes,
+                onValueChange = {
+
                 })
             TextField(
                 keyboardOptions = KeyboardOptions(
@@ -113,44 +134,70 @@ fun NewPagoScreen(
                     imeAction = ImeAction.Next
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                value = state.monto.toString(), onValueChange = {
-                    viewModel.onEvent(NewPagoEvent.EnterMonto(it))
+                value = state.monto, onValueChange = {
+                    onEvent(NewPagoEvent.EnterMonto(it))
                 })
-            TextField(
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                value = state.descripcion, onValueChange = {
-                    viewModel.onEvent(NewPagoEvent.EnterDescripcion(it))
-                })
+            ExposedDropdownMenuBox(
+                expanded = state.isExtended,
+                onExpandedChange = {
+                    onEvent(NewPagoEvent.ToggleDropdown())
+                }
+            ) {
+                TextField(
+                    enabled = false,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    value = state.tipoPago.name, onValueChange = {
+                    }, trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = state.isExtended)
+                    })
+                ExposedDropdownMenu(expanded = state.isExtended, onDismissRequest = {
+                    onEvent(NewPagoEvent.ToggleDropdown())
+                }) {
+                    TIPOPAGO.values().forEach { tipoPago ->
+                        DropdownMenuItem(text = {
+                            Text(text = tipoPago.name)
+                        }, onClick = {
+                            onEvent(NewPagoEvent.EnterTipoPago(tipoPago))
+                        })
+                    }
+                }
+            }
             Box(modifier = Modifier.fillMaxWidth()) {
-                FilledIconButton(
-                    modifier = Modifier.align(Alignment.BottomEnd),
+                FilledTonalButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     onClick = {
-                        viewModel.onEvent(NewPagoEvent.SavePago())
+                        onEvent(NewPagoEvent.SavePago())
                     }) {
-                    Icon(imageVector = Icons.Outlined.Save, contentDescription = "Save")
+                    Text(text = "Guardar")
                 }
             }
         }
 
         if (state.showClienteDialog) {
-            Dialog(onDismissRequest = {
-                viewModel.onEvent(NewPagoEvent.ToggleShowDialogCliente())
-            }) {
-                ParticipantesDialog(onDismissRequest = {
-                    viewModel.onEvent(NewPagoEvent.ToggleShowDialogCliente())
+            ParticipantesDialog(
+                onDismissRequest = {
+                    onEvent(NewPagoEvent.ToggleShowDialogCliente())
                 }, onSelectedParticipante = { participanteId, participanteDes ->
-                    viewModel.onEvent(
+                    onEvent(
                         NewPagoEvent.SelectParticipante(
                             participanteId,
                             participanteDes
                         )
                     )
                 })
-            }
         }
     }
 }
 
+@Preview
+@Composable
+fun NewPagoPreview() {
+    NewPagoContent(modifier = Modifier.fillMaxSize(), state = NewPagoState(
+        isExtended = true
+    ), onEvent = {
+
+    })
+}

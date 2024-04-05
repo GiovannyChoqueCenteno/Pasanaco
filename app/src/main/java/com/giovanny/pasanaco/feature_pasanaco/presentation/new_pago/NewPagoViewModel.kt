@@ -3,6 +3,7 @@ package com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.Pago
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.dia.DiaUseCases
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.PagoUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewPagoViewModel @Inject constructor(
-    private val pagoUseCases: PagoUseCases
+    private val pagoUseCases: PagoUseCases,
+    private val diaUseCases: DiaUseCases
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -24,12 +26,6 @@ class NewPagoViewModel @Inject constructor(
 
     fun onEvent(event: NewPagoEvent) {
         when (event) {
-            is NewPagoEvent.EnterDescripcion -> {
-                _state.update {
-                    it.copy(descripcion = event.value)
-                }
-            }
-
             is NewPagoEvent.EnterMonto -> {
                 _state.update {
                     it.copy(monto = event.value)
@@ -49,17 +45,19 @@ class NewPagoViewModel @Inject constructor(
             }
 
             is NewPagoEvent.SavePago -> {
-
                 viewModelScope.launch {
                     try {
-                        val pago = Pago(
-                            descripcion = state.value.descripcion,
-                            monto = state.value.monto.toDouble(),
-                            participanteId = state.value.participanteId,
-                            tipoPago = 1
-                        )
-                        pagoUseCases.addPago(pago)
-                        _eventFlow.emit(UiEvent.SaveNote)
+                        val dia = diaUseCases.diaActivo()
+                        if (dia != null) {
+                            val pago = Pago(
+                                monto = state.value.monto.toDouble(),
+                                participanteId = state.value.participanteId,
+                                tipoPago = state.value.tipoPago.id!!,
+                                diaId = dia.diaId!!
+                            )
+                            pagoUseCases.addPago(pago)
+                            _eventFlow.emit(UiEvent.SaveNote)
+                        }
                     } catch (e: Exception) {
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
@@ -67,7 +65,19 @@ class NewPagoViewModel @Inject constructor(
                             )
                         )
                     }
+                }
+            }
 
+            is NewPagoEvent.ToggleDropdown -> {
+
+                _state.update {
+                    it.copy(isExtended = !it.isExtended)
+                }
+            }
+
+            is NewPagoEvent.EnterTipoPago -> {
+                _state.update {
+                    it.copy(tipoPago = event.tipoPago, isExtended = false)
                 }
             }
         }
@@ -75,7 +85,11 @@ class NewPagoViewModel @Inject constructor(
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
-        object SaveNote : UiEvent()
+        data object SaveNote : UiEvent()
     }
 }
 
+enum class TIPOPAGO(val id: Int) {
+    QR(1),
+    EFECTIVO(2),
+}

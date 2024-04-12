@@ -9,4 +9,6 @@ interface PagoRepository {
     fun getPagos(): Flow<List<PagoParticipante>>
     suspend fun addPago(pago: Pago)
     fun getPagosDiaActivo(): Flow<List<PagoParticipante>>
+    suspend fun deletePago(pagoId: Long): Int
+    suspend fun getPago(pagoId: Long): PagoParticipante?
 }

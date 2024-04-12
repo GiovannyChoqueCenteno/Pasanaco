@@ -8,7 +8,7 @@ data class PagoParticipante(
     val monto: Double,
     val tipoPago: Int,
     val participanteId: Long,
-    val pagoId: Int? = null,
+    val pagoId: Long? = null,
     val diaId: Long,
     val participanteDes: String,
     val date: LocalDateTime

@@ -1,7 +1,7 @@
 package com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago
 
 data class NewPagoState(
-    val descripcion: String = "",
+    val pagoId: Long = 0,
     val monto: String = "",
     val tipoPago: TIPOPAGO = TIPOPAGO.QR,
     val participanteId: Long = 0,

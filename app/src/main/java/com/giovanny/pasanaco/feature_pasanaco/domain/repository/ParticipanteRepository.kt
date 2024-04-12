@@ -10,4 +10,5 @@ interface ParticipanteRepository {
     suspend fun addParticipante(participante: Participante)
     suspend fun deleteParticipante(participanteId: Long): Int
     fun getPagosDiaActivoByParticipante(): Flow<List<PagoParticipanteDia>>
+    suspend fun getParticipante(participanteId: Long): Participante?
 }

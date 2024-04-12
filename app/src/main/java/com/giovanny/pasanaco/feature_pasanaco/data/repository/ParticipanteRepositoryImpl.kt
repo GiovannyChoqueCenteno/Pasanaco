@@ -25,4 +25,8 @@ class ParticipanteRepositoryImpl(
     override fun getPagosDiaActivoByParticipante(): Flow<List<PagoParticipanteDia>> {
         return dao.getPagosDiaActivoByParticipante()
     }
+
+    override suspend fun getParticipante(participanteId: Long): Participante? {
+        return dao.getParticipante(participanteId)
+    }
 }

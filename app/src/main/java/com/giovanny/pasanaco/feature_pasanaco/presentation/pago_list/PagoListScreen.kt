@@ -13,12 +13,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +41,7 @@ import com.giovanny.pasanaco.core.AppBarState
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.Pago
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.PagoParticipante
 import com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago.NewPagoViewModel
+import com.giovanny.pasanaco.feature_pasanaco.presentation.participante_list.ParticipanteListEvent
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDateTime
 
@@ -96,14 +99,22 @@ fun PagoListScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     PagoListContent(
         modifier = modifier,
-        state = state
+        state = state,
+        onNavigate = {
+            navController.navigate(it)
+        },
+        onEvent = {
+            viewModel.onEvent(it)
+        }
     )
 }
 
 @Composable
 fun PagoListContent(
     modifier: Modifier = Modifier,
-    state: PagoListState
+    state: PagoListState,
+    onNavigate: (String) -> Unit,
+    onEvent: (PagoListEvent) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -119,12 +130,56 @@ fun PagoListContent(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(state.pagoList) { pago ->
-                PagoCard(pago = pago)
+                PagoCard(
+                    pago = pago,
+                    onNavigate = {
+                        onNavigate(it)
+                    },
+                    onDeleting = {
+                        onEvent(PagoListEvent.ToggleDialog)
+                    },
+                    isEditable = true
+
+                )
+                if (state.showDialog)
+                    AlertDialog(
+                        title = {
+                            Text(text = state.textDialog)
+                        },
+                        text = {
+                            Text(text = state.textDialog)
+                        },
+                        onDismissRequest = {
+                            onEvent(PagoListEvent.ToggleDialog)
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    onEvent.invoke(PagoListEvent.ToggleDialog)
+                                }
+                            ) {
+                                Text("Cancelar")
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    onEvent.invoke(
+                                        PagoListEvent.DeletePago(
+                                            pago.pagoId!!
+                                        )
+                                    )
+                                }
+                            ) {
+                                Text("Aceptar")
+                            }
+                        },
+                    )
             }
         }
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
+    }
+    if (state.isLoading) {
+        CircularProgressIndicator()
     }
 }
 
@@ -144,6 +199,10 @@ fun PagoListPreview() {
                     participanteDes = "Pepe"
                 )
             )
-        )
+        ),
+        onNavigate = {},
+        onEvent = {
+
+        }
     )
 }

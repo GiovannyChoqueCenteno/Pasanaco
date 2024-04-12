@@ -53,6 +53,7 @@ fun NewPagoScreen(
     onComposing: (AppBarState) -> Unit,
     snackbarHostState: SnackbarHostState,
     viewModel: NewPagoViewModel = hiltViewModel(),
+    isDeleting: Boolean = false
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -103,9 +104,8 @@ fun NewPagoScreen(
 fun NewPagoContent(
     modifier: Modifier,
     state: NewPagoState,
-    onEvent: (NewPagoEvent) -> Unit
+    onEvent: (NewPagoEvent) -> Unit,
 ) {
-
     Box(modifier = modifier.padding(horizontal = 20.dp)) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -133,6 +133,9 @@ fun NewPagoContent(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Next
                 ),
+                label = {
+                    Text(text = "Monto")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 value = state.monto, onValueChange = {
                     onEvent(NewPagoEvent.EnterMonto(it))

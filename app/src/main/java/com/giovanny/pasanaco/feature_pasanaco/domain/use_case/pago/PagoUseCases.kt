@@ -6,4 +6,6 @@ data class PagoUseCases(
     val getPagos: GetPagos,
     val addPago: AddPago,
     val getPagosDiaActivo: GetPagosDiaActivo,
+    val deletePago: DeletePago,
+    val getPago : GetPago
 )

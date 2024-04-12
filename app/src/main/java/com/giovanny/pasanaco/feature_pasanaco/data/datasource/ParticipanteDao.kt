@@ -2,6 +2,7 @@ package com.giovanny.pasanaco.feature_pasanaco.data.datasource
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.PagoParticipanteDia
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.Participante
@@ -12,7 +13,7 @@ interface ParticipanteDao {
     @Query("SELECT * FROM Participante")
     fun getParticipantes(): Flow<List<Participante>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addParticipante(participante: Participante)
 
     @Query("delete from Participante where participanteId =:participanteId")
@@ -29,4 +30,7 @@ interface ParticipanteDao {
 
     )
     fun getPagosDiaActivoByParticipante(): Flow<List<PagoParticipanteDia>>
+
+    @Query("select * from participante where participanteId=:participanteId")
+    suspend fun getParticipante(participanteId: Long): Participante?
 }

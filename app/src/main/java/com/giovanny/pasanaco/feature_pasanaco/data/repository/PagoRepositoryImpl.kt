@@ -20,4 +20,12 @@ class PagoRepositoryImpl(
     override fun getPagosDiaActivo(): Flow<List<PagoParticipante>> {
         return dao.getPagosDiaActivo()
     }
+
+    override suspend fun deletePago(pagoId: Long): Int {
+        return dao.deletePago(pagoId)
+    }
+
+    override suspend fun getPago(pagoId: Long): PagoParticipante? {
+        return dao.getPago(pagoId)
+    }
 }

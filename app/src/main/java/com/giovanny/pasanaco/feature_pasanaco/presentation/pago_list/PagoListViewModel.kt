@@ -43,6 +43,25 @@ class PagoListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun onEvent(event: PagoListEvent) {
+        when (event) {
+            is PagoListEvent.DeletePago -> {
+                viewModelScope.launch {
+                    pagoUseCases.deletePago(event.pagoId)
+                    _state.update {
+                        it.copy(showDialog = false)
+                    }
+                }
+            }
+
+            is PagoListEvent.ToggleDialog -> {
+                _state.update {
+                    it.copy(showDialog = !it.showDialog, textDialog = "Desea eliminar este pago")
+                }
+            }
+        }
+    }
+
     fun diaActivo() {
         viewModelScope.launch {
             try {

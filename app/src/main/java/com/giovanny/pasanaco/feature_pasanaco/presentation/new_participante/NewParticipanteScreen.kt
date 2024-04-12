@@ -102,6 +102,9 @@ fun NewParticipanteContent(
             Text(text = "Nuevo Participante", style = MaterialTheme.typography.titleMedium)
             TextField(
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                label = {
+                    Text(text = "Nombre")
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = state.descripcion,
@@ -110,11 +113,14 @@ fun NewParticipanteContent(
                 }
             )
             TextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                label = {
+                    Text(text = "Monto")
+                },
                 value = state.monto,
                 onValueChange = {
                     onEvent(NewParticipanteEvent.EnterMonto(it))

@@ -15,6 +15,8 @@ import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.dia.DiaActivo
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.dia.DiaUseCases
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.dia.GetCountDia
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.AddPago
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.DeletePago
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.GetPago
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.GetPagos
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.GetPagosDiaActivo
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.pago.PagoUseCases
@@ -22,6 +24,7 @@ import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.AddPa
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.DeleteParticipante
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.GetPagosDiaActivoByParticipante
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.GetPariticipantes
+import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.GetParticipante
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.ParticipanteUseCases
 import dagger.Module
 import dagger.Provides
@@ -54,7 +57,9 @@ object AppModule {
         return PagoUseCases(
             getPagos = GetPagos(repository),
             addPago = AddPago(repository),
-            getPagosDiaActivo = GetPagosDiaActivo(repository)
+            getPagosDiaActivo = GetPagosDiaActivo(repository),
+            deletePago = DeletePago(repository),
+            getPago = GetPago(repository)
         )
     }
 
@@ -71,7 +76,8 @@ object AppModule {
             getPariticipantes = GetPariticipantes(repository),
             addParticipante = AddParticipante(repository),
             deleteParticipante = DeleteParticipante(repository),
-            getPagosDiaActivoByParticipante = GetPagosDiaActivoByParticipante(repository)
+            getPagosDiaActivoByParticipante = GetPagosDiaActivoByParticipante(repository),
+            getParticipante = GetParticipante(repository)
         )
     }
 

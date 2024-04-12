@@ -1,10 +1,12 @@
 package com.giovanny.pasanaco.feature_pasanaco.presentation.new_participante
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.InvalidParticipanteException
 import com.giovanny.pasanaco.feature_pasanaco.domain.model.Participante
 import com.giovanny.pasanaco.feature_pasanaco.domain.use_case.participante.ParticipanteUseCases
+import com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago.TIPOPAGO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewParticipanteViewModel @Inject constructor(
-    private val participanteUseCases: ParticipanteUseCases
+    private val participanteUseCases: ParticipanteUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -26,6 +29,24 @@ class NewParticipanteViewModel @Inject constructor(
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
         data object SaveParticipante : UiEvent()
+    }
+
+    init {
+        savedStateHandle.get<Long>("participanteId")?.let { participanteId ->
+            if (participanteId != -1L) {
+                viewModelScope.launch {
+                    participanteUseCases.getParticipante(participanteId)?.also { participante ->
+                        _state.update {
+                            it.copy(
+                                participanteId = participante.participanteId ?: 0,
+                                descripcion = participante.participanteDes,
+                                monto = participante.monto.toString()
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun onEvent(event: NewParticipanteEvent) {
@@ -40,6 +61,7 @@ class NewParticipanteViewModel @Inject constructor(
                 viewModelScope.launch {
                     try {
                         val participante = Participante(
+                            participanteId = state.value.participanteId,
                             participanteDes = state.value.descripcion,
                             estado = true,
                             selected = false,

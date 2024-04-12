@@ -93,13 +93,13 @@ fun HomeContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Dia ${state.dia?.diaNro}",
-                        style = MaterialTheme.typography.labelLarge
+                        text = if (state.dia == null) "Dia no activado" else "Dia ${state.dia.diaNro}",
+                        style = MaterialTheme.typography.headlineMedium
                     )
-                    Text(text = "Total Pagado", style = MaterialTheme.typography.labelLarge)
+                    Text(text = "Total Pagado")
                     Text(
                         text = state.pagoList.sumOf { it.monto }.toString(),
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.displaySmall
                     )
                 }
             }

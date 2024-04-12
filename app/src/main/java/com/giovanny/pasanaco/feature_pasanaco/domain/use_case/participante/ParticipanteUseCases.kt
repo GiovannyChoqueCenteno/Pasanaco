@@ -4,5 +4,6 @@ data class ParticipanteUseCases(
     val getPariticipantes: GetPariticipantes,
     val addParticipante: AddParticipante,
     val deleteParticipante: DeleteParticipante,
-    val getPagosDiaActivoByParticipante: GetPagosDiaActivoByParticipante
+    val getPagosDiaActivoByParticipante: GetPagosDiaActivoByParticipante,
+    val getParticipante: GetParticipante
 )

@@ -11,7 +11,7 @@ data class Pago(
     val tipoPago: Int,
     val participanteId: Long,
     @PrimaryKey(autoGenerate = true)
-    val pagoId: Int? = null,
+    val pagoId: Long? = null,
     val diaId: Long,
     val date: LocalDateTime = LocalDateTime.now(),
 ) {

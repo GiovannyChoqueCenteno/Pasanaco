@@ -36,10 +36,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.giovanny.pasanaco.core.AppBarState
 import com.giovanny.pasanaco.feature_pasanaco.presentation.home.HomeScreen
 import com.giovanny.pasanaco.feature_pasanaco.presentation.new_pago.NewPagoScreen
@@ -180,7 +182,15 @@ class MainActivity : ComponentActivity() {
                                             )
                                     )
                                 }
-                                composable(Screen.NuevoPago.route) {
+                                composable(
+                                    route = Screen.NuevoPago.route + "?pagoId={pagoId}",
+                                    arguments = listOf(
+                                        navArgument(name = "pagoId") {
+                                            type = NavType.LongType
+                                            defaultValue = -1
+                                        }
+                                    )
+                                ) {
                                     NewPagoScreen(
                                         navController = navController,
                                         onComposing = {
@@ -224,7 +234,13 @@ class MainActivity : ComponentActivity() {
                                             navController = navController
                                         )
                                     }
-                                    composable(Screen.NuevoParticipante.route) {
+                                    composable(Screen.NuevoParticipante.route + "?participanteId={participanteId}",
+                                        arguments = listOf(
+                                            navArgument(name = "participanteId") {
+                                                type = NavType.LongType
+                                                defaultValue = -1
+                                            }
+                                        )) {
                                         NewParticipanteScreen(
                                             modifier = Modifier
                                                 .fillMaxSize()

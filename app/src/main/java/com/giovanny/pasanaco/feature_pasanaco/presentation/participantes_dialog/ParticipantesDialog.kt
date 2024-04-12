@@ -1,5 +1,6 @@
 package com.giovanny.pasanaco.feature_pasanaco.presentation.participantes_dialog
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +28,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.giovanny.pasanaco.feature_pasanaco.domain.model.Participante
 
 @Composable
 fun ParticipantesDialog(
@@ -88,14 +91,24 @@ fun ParticipantesContent(
                                 )
                                 onDismissRequest.invoke()
                             },
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        Box(
                             modifier = Modifier
-                                .height(40.dp),
-                            text = participante.participanteDes,
-                            style = MaterialTheme.typography.bodyLarge
+                                .fillMaxWidth()
+                                .height(55.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.Center),
+                                text = participante.participanteDes,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        Divider(
+                            color = MaterialTheme.colorScheme.onSurface
                         )
-                        Divider()
                     }
                 }
             }
@@ -104,10 +117,41 @@ fun ParticipantesContent(
 }
 
 @Composable
-@Preview
+@Preview()
 fun ParticipantesPreview() {
     ParticipantesContent(
-        state = ParticipantesDialogState(),
+        state = ParticipantesDialogState(
+            participanteList = listOf(
+                Participante(
+                    participanteId = 1,
+                    participanteDes = "Participante",
+                    monto = 200.0,
+                    selected = false,
+                    estado = true
+                ),
+                Participante(
+                    participanteId = 1,
+                    participanteDes = "Participante",
+                    monto = 200.0,
+                    selected = false,
+                    estado = true
+                ),
+                Participante(
+                    participanteId = 1,
+                    participanteDes = "Participante",
+                    monto = 200.0,
+                    selected = false,
+                    estado = true
+                ),
+                Participante(
+                    participanteId = 1,
+                    participanteDes = "Participante",
+                    monto = 200.0,
+                    selected = false,
+                    estado = true
+                )
+            )
+        ),
         onDismissRequest = {
 
         },
